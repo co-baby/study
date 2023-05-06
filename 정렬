@@ -1,0 +1,62 @@
+#include <stdio.h>
+void bubble_sort(int list[], int n) { //버블정렬
+	int i, j, tmp;
+	for (i = n - 1; i > 0; i--) {
+		for (j = 0; j < i; j++) {
+			if (list[j] < list[j + 1]) {
+				tmp = list[j];
+				list[j] = list[j + 1];
+				list[j + 1] = tmp;
+			}
+		}
+	}
+}
+
+void insertion_sort(int list[], int n) { // 삽입 정렬
+	int i, j, key;
+	for (i = 1; i < n; i++) {
+		key = list[i];
+		for (j = i - 1; j >= 0 && list[j] > key; j--) {
+			list[j + 1] = list[j];
+		}
+		list[j + 1] = key;
+	}
+}
+
+void selection_sort(int list[], int n) { //선택정렬
+	int i, j, least, tmp;
+	for (i = 0; i < n - 1; i++) {
+		least = i;
+		for (j = i + 1; j < n; j++) {
+			if (list[j] < list[least])
+				least = j;
+		}
+		if (i != least) {
+			tmp = list[i];
+			list[i] = list[least];
+			list[least] = tmp;
+		}
+	}
+}
+
+void inc_insertion_sort(int list[], int first, int last, int gap) { //셸정렬(삽입)
+	int i, j, key;
+	for (i = first + gap; i <= last; i = i + gap) {
+		key = list[i];
+		for (j = i - gap; j >= first && list[j] > key; j = j - gap) {
+			list[j + gap] = list[j];
+		}
+		list[j + gap] = key;
+	}
+}
+void shell_sort(int list[], int n) {//셸 
+	int i, gap;
+	for (gap = n / 2; gap > 0; gap = gap / 2) {
+		if ((gap % 2) == 0) {
+			gap++;
+		}
+		for (i = 0; i < gap; i++) {
+			inc_insertion_sort(list, i, n - 1, gap);
+		}
+	}
+}
