@@ -1,0 +1,119 @@
+#include <stdio.h>
+#include <stdio.h>
+
+typedef struct node {
+	int data;
+	struct tree* left;
+	struct tree* right;
+}Node;
+
+Node* Insert(Node* node, int data) {
+	if (node == NULL) {
+		Node* newnode = (Node*)malloc(sizeof(Node));
+		newnode->data = data;
+		newnode->left = NULL;
+		newnode->right = NULL;
+		return newnode;
+	}
+	else {
+		if (node->data > data) {
+			node->left = Insert(node->left, data);
+		}
+		else if (node->data < data) {
+			node->right = Insert(node->right, data);
+		}
+		return node;
+	}
+}
+
+void Modify(Node* node, int data, int newdata) {
+	if (node == NULL) return;
+	if (node->data == data) {
+		node->data = newdata;
+	}
+	else {
+		if (node->data > data) {
+			Modify(node->left, data, newdata);
+		}
+		else {
+			Modify(node->right, data, newdata);
+		}
+	}
+}
+
+Node* Search(Node* node, int data) {
+	if (node == NULL) return NULL;
+	if (node->data == data) return node;
+	else {
+		if (node->data > data) {
+			return Search(node->left, data);
+		}
+		else {
+			return Search(node->right, data);
+		}
+	}
+}
+
+Node* FindMinNode(Node* node, Node** minNode) {
+	if (node->left == NULL) {
+		*minNode = node;
+		node = node->right;
+		return node;
+	}
+	else {
+		node->left = FindMinNode(node->left, minNode);
+		return node;
+	}
+}
+
+Node* Delete(Node* node, int data) {
+	if (node == NULL) return NULL;
+	if (node->data == data) {
+		Node* deleteNode = node;
+		if (node->left == NULL && node->right == NULL) node = NULL;
+		else if (node->left != NULL && node->right == NULL) node = node->left;
+		else if (node->left == NULL && node->right != NULL) node = node->right;
+		else {
+			Node* minNode = NULL;
+			node->right = FindMinNode(node->right, &minNode);
+			minNode->left = deleteNode->left;
+			minNode->right = deleteNode->right;
+			node = minNode;
+		}
+		free(deleteNode);
+		return node;
+	}
+	else {
+		if (node->data > data)
+			node->left = Delete(node->left, data);
+		else
+			node->right = Delete(node->right, data);
+		return node;
+	}
+}
+void ShowInOrder(Node* node) {
+	if (node == NULL) return;
+	ShowInOrder(node->left);
+	printf("%d ", node->data);
+	ShowInOrder(node->right);
+}
+int main() {
+	Node* root = NULL;
+	root = Insert(root, 20);
+	root = Insert(root, 10);
+	root = Insert(root, 32);
+	root = Insert(root, 4);
+	root = Insert(root, 13);
+	root = Insert(root, 25);
+	root = Insert(root, 55);
+	ShowInOrder(root);
+	printf("\n");
+	Modify(root, 10, 12);
+	ShowInOrder(root);
+	printf("\n");
+	printf("%d", Search(root, 12)->data);
+	printf("\n");
+	root = Delete(root, 32);
+	ShowInOrder(root);
+	return 0;
+}
